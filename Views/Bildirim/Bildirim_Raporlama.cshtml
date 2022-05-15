@@ -1,0 +1,125 @@
+@{
+    Layout = "~/Views/Shared/Anasayfa_Layout.cshtml";
+}
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.css">
+<script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+
+<script>
+    function getFormattedDate(date) {
+        var today = new Date(date);
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy;
+        return today
+    }
+    function ajaxRequest(params) {
+
+        //var url = 'https://examples.wenzhixin.net.cn/examples/bootstrap_table/data'
+        //$.get(url + '?' + $.param(params.data)).then(function (res) {
+        //    params.success(res)
+        //})
+        console.log(params.data)    
+
+
+        var Limit = (params.data.limit == undefined ? '9999999' : params.data.limit )
+
+        $.ajax({
+            url: "/api/Bildirim_Api/get_All_Notificatons_With_Pagination",
+            type: 'POST',
+            async: true,
+            global:false,
+            dataType: "json",
+            data: '{' +
+                '"offset":"' + params.data.offset + '",' +
+                '"limit":"' +Limit + '",' +
+                '"search":"' + params.data.search + '"' +
+                '}',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                console.log(data)
+                var temp = data
+                var rows = []
+                for (i = 0; i < temp.rows.length; i++) {
+                    var x = {
+                        'ID': temp.rows[i].id,
+                        //'İşin_Adı': temp.rows[i].İşin_Adı,
+                        //'oluşturlma_Tar': getFormattedDate(temp.rows[i].olusturlma_Tarihi),
+                        //'son_Düzenleme_Tar': temp.rows[i].son_Düzenleme_Tar,
+                        //'Düzenle': '<button class="btn btn-warning btn-sm" value="' + temp.rows[i].id + '" id="İşi_Düzenle" style="word-break: keep-all;"><i class="fa fa-file-text "></i> Düzenle</button>',
+                        //'Sil': '<button class="btn btn-danger btn-sm" value="' + temp.rows[i].id + '" id="İşi_Sil" style="word-break: keep-all;"><i class="fa fa-trash "></i></button>'
+
+                    }
+                    rows.push(x)
+
+                }
+                temp.rows = rows
+                params.success(temp)
+
+
+            },
+            error: function () {
+                alert('Talep esnasında sorun oluştu.Yeniden deneyin');
+            }
+        });
+
+    }
+
+
+    $(document).ready(function () {
+
+        Bildirim_Tablosu_Build($('#Bildirim_Table'))
+
+    })
+
+
+    function Bildirim_Tablosu_Build($el) {
+
+        var i; var j; var row
+        var columns = [];
+        var data__ = [];
+
+        columns.push({
+            field: 'ID',
+            title: 'ID',
+        })
+
+
+        $el.bootstrapTable('destroy')
+
+        $el.bootstrapTable({
+            columns: columns,
+            sidePagination: "server",
+            pagination: true,
+            ajax: "ajaxRequest",
+            // clickToSelect: true,
+            // detailView: true,
+            onExpandRow: function (index, row, detail) {
+                //Takım_Bilgileri_Tablo_Doldur(index, row, detail)
+            },
+            onPostBody: function () {
+
+            }
+        })
+
+
+
+    };
+
+</script>
+
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <table   data-page-list="[10, 25, 50, 100, 200, All]" id="Bildirim_Table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

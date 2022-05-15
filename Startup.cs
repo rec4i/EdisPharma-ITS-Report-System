@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using qrmenu.Services;
 
 namespace WebApi
 {
@@ -43,7 +44,9 @@ namespace WebApi
             // configure DI for application services
             services.AddScoped<IJwtUtils, JwtUtils>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<Iİş_EmirleriServices,İş_EmirleriServices>();
+            services.AddScoped<Iİş_EmirleriServices, İş_EmirleriServices>();
+            services.AddScoped<IBildirimService, BildirimService>();
+
 
 
 
@@ -76,7 +79,7 @@ namespace WebApi
         // configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext context)
         {
-            
+
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var context_ = serviceScope.ServiceProvider.GetService<DataContext>();
@@ -85,6 +88,8 @@ namespace WebApi
             }
             context.Database.EnsureCreated();
             createTestUser(context);
+
+            
 
             app.UseRouting();
             app.UseStaticFiles();

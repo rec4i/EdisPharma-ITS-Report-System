@@ -12,7 +12,6 @@ namespace WebApi.Services
 {
     public interface Iİş_EmirleriServices
     {
-        
     }
     public class İş_EmirleriServices : Iİş_EmirleriServices
     {
@@ -32,12 +31,6 @@ namespace WebApi.Services
             _appSettings = appSettings.Value;
         }
 
-
-
-
-
-      
-
-
+       
     }
 }

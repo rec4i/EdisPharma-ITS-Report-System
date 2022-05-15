@@ -12,6 +12,12 @@ namespace WebApi.Helpers
         public DbSet<User> Report_Users__ { get; set; }
 
 
+        public DbSet<NOTIFICATION> NOTIFICATION { get; set; }
+
+        public DbSet<NOTIFICATION_ORDER> NOTIFICATION_ORDER { get; set; }
+
+
+
         private readonly IConfiguration Configuration;
 
         public DataContext(IConfiguration configuration)
