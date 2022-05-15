@@ -3,21 +3,113 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Helpers;
 
 namespace WebApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220515133052_User_Talosu")]
+    partial class User_Talosu
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("WebApi.Entities.City", b =>
+                {
+                    b.Property<int>("CityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CountryID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PlateNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CityID");
+
+                    b.ToTable("cityies");
+                });
+
+            modelBuilder.Entity("WebApi.Entities.Eczane", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adres")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Brick_500")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Eczacı_Adı")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Eczane_Adı")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Eczane_Konum_Tipi")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Eposta")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("GLN_No")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Mediporf_Kodu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Silinmişmi")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Telefon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("İlçe")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Şehir")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("eczanes");
+                });
+
+            modelBuilder.Entity("WebApi.Entities.Town", b =>
+                {
+                    b.Property<int>("TownID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CityID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TownName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TownID");
+
+                    b.ToTable("towns");
+                });
 
             modelBuilder.Entity("WebApi.Entities.User", b =>
                 {
@@ -28,6 +120,12 @@ namespace WebApi.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gorev_Yeri_İl")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Gorev_Yeri_İlçe")
+                        .HasColumnType("int");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -46,7 +144,7 @@ namespace WebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Report_Users__");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("WebApi.Entities.User", b =>

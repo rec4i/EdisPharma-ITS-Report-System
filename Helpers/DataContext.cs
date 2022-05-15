@@ -9,10 +9,7 @@ namespace WebApi.Helpers
 
     public class DataContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Eczane> eczanes { get; set; }
-        public DbSet<City> cityies { get; set; }
-        public DbSet<Town> towns {get;set;}
+        public DbSet<User> Report_Users__ { get; set; }
 
 
         private readonly IConfiguration Configuration;

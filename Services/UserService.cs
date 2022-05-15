@@ -61,14 +61,14 @@ namespace WebApi.Services
                  Role = request.Role },
             };
 
-            _context.Users.AddRange(testUsers);
+            _context.Report_Users__.AddRange(testUsers);
             _context.SaveChanges();
             return testUsers[0];
         }
 
         public User Update_User(User request)
         {
-            var User = _context.Users.FirstOrDefault(o => o.Id == request.Id);
+            var User = _context.Report_Users__.FirstOrDefault(o => o.Id == request.Id);
 
             User.FirstName = request.FirstName;
             User.LastName = request.LastName;
@@ -87,7 +87,7 @@ namespace WebApi.Services
             var x =Token.Claims.FirstOrDefault(o => o.Type =="id").Value;
             
 
-            var User= _context.Users.FirstOrDefault(o => o.Id == int.Parse(x));
+            var User= _context.Report_Users__.FirstOrDefault(o => o.Id == int.Parse(x));
 
             return User;
 
@@ -96,7 +96,7 @@ namespace WebApi.Services
         {
 
 
-            var User = _context.Users.FirstOrDefault(o => o.Id == request.Id);
+            var User = _context.Report_Users__.FirstOrDefault(o => o.Id == request.Id);
 
 
             User.PasswordHash = BCryptNet.HashPassword(request.Password);
@@ -109,7 +109,7 @@ namespace WebApi.Services
         public List<User> Get_Users_WOP()
         {
 
-            var Users = _context.Users.Select(o => new User
+            var Users = _context.Report_Users__.Select(o => new User
             {
                 Id = o.Id,
                 FirstName = o.FirstName,
@@ -125,7 +125,7 @@ namespace WebApi.Services
         public User Get_Users_WP(User x)
         {
 
-            var User = _context.Users.FirstOrDefault(o => o.Id == x.Id);
+            var User = _context.Report_Users__.FirstOrDefault(o => o.Id == x.Id);
 
             return User;
         }
@@ -133,7 +133,7 @@ namespace WebApi.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress)
         {
-            var user = _context.Users.SingleOrDefault(x => x.Username == model.Username);
+            var user = _context.Report_Users__.SingleOrDefault(x => x.Username == model.Username);
 
             // validate
             if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
@@ -203,12 +203,12 @@ namespace WebApi.Services
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users;
+            return _context.Report_Users__;
         }
 
         public User GetById(int id)
         {
-            var user = _context.Users.Find(id);
+            var user = _context.Report_Users__.Find(id);
             if (user == null) throw new KeyNotFoundException("User not found");
             return user;
         }
@@ -219,7 +219,7 @@ namespace WebApi.Services
 
         private User getUserByRefreshToken(string token)
         {
-            var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = _context.Report_Users__.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
             if (user == null)
                 throw new AppException("Invalid token");

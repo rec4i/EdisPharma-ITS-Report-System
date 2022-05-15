@@ -15,9 +15,7 @@ namespace WebApi.Entities
 
         public string UserPhoto { get; set; }
 
-        public int Gorev_Yeri_İl { get; set; }
-        public int Gorev_Yeri_İlçe { get; set; }
-
+  
         public Role Role { get; set; }
 
         [JsonIgnore]

@@ -1,0 +1,169 @@
+@{
+    Layout = "~/Views/Shared/Anasayfa_Layout.cshtml";
+}
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.20.1/dist/bootstrap-table.min.css">
+<script src="https://unpkg.com/bootstrap-table@1.20.1/dist/bootstrap-table.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        console.log("sad89908ad908")
+
+        $('#table').bootstrapTable({
+            columns: [{
+                field: 'id',
+                title: 'Item ID'
+            }, {
+                field: 'name',
+                title: 'Item Name'
+            }, {
+                field: 'price',
+                title: 'Item Price'
+            }],
+            data: [{
+                id: 1,
+                name: 'Item 1',
+                price: '$1'
+            }, {
+                id: 2,
+                name: 'Item 2',
+                price: '$2'
+            }]
+        })
+
+    })
+
+    function Büküm_Yeni_Build_Table_Kilo($el) {
+
+        $el.bootstrapTable('destroy');
+
+        var i; var j; var row
+        var columns = [];
+        var data__ = [];
+
+        columns.push({
+            field: 'ID',
+            title: 'ID',
+            sortable: true
+        })
+        columns.push({
+            field: 'Ağırlık_Bas',
+            title: 'Ağırlık Bas(kg)',
+            sortable: true
+        })
+        columns.push({
+            field: 'Ağırlık_Son',
+            title: 'Ağırlık Son(kg)',
+            sortable: true
+        })
+        columns.push({
+            field: 'Katsatı',
+            title: 'Katsayı',
+            sortable: true
+        })
+
+
+        columns.push({
+            field: 'Düzenle',
+            title: 'Düzenle',
+        })
+        columns.push({
+            field: 'Sil',
+            title: 'Sil',
+        })
+
+
+        $.ajax({
+            url: 'api/BükümYeni/Büküm_KiloHesabı_Get_All',
+            type: 'POST',
+            async: false,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                var temp = data
+
+                for (i = 0; i < temp.length; i++) {
+                    row = {}
+
+
+                    var kilo_Bas = '' +
+                        '<input   id="Büküm_KiloHesabı_Kilo_Bas_İnput" class="form-control" data-thousands="." data-decimal=","' +
+                        '                                           value="' + temp[i].kilo_Bas.toFixed(2) + '"         data-suffix=" kg" type="text"' +
+                        '                                                      />' +
+                        '';
+
+                    var kilo_Son = '' +
+                        '<input   id="Büküm_KiloHesabı_Kilo_Son_İnput" class="form-control" data-thousands="." data-decimal=","' +
+                        '                                           value="' + temp[i].kilo_Son.toFixed(2) + '"         data-suffix=" kg" type="text"' +
+                        '                                                      />' +
+                        '';
+
+                    var katSayı = '' +
+                        '<input   id="Büküm_KiloHesabı_Katsayı_İnput" class="form-control" data-thousands="." data-decimal=","' +
+                        '                                           value="' + temp[i].katSayı.toFixed(2) + '"         data-suffix="" type="text"' +
+                        '                                                      />' +
+                        '';
+
+
+
+
+
+                    row['ID'] = temp[i].id
+                    row['Katsatı'] = katSayı
+                    row['Ağırlık_Bas'] = kilo_Bas
+                    row['Ağırlık_Son'] = kilo_Son
+                    row['Sil'] = '<button class="btn btn-danger"  Büküm_KiloHesabı_Id="' + temp[i].id + '"  id="Büküm_KiloHesabı_Sil"><i class="fa fa-trash"></i></button>'
+                    row['Düzenle'] = '<button class="btn btn-block btn-warning" Büküm_KiloHesabı_Id="' + data[i].id + '"  id="Büküm_KiloHesabı_Düzenle">Düzenle</button>'
+
+                    data__.push(row)
+
+
+                }
+            },
+            error: function () {
+                alert('Talep esnasında sorun oluştu.Yeniden deneyin');
+            }
+        });
+
+
+
+        $el.bootstrapTable({
+            columns: columns,
+            data: data__,
+            onPostBody: function (data) {
+
+            }
+
+        })
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+</script>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+
+                        <table id="table"></table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

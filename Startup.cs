@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Kaynak_Kod.Services;
 
 namespace WebApi
 {
@@ -44,8 +43,9 @@ namespace WebApi
             // configure DI for application services
             services.AddScoped<IJwtUtils, JwtUtils>();
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IŞehir_İlçeServices,Şehir_İlçeServices>();
-            services.AddScoped<IEczaneListeOluşturServices,EczaneListeOluşturServices>();
+            services.AddScoped<Iİş_EmirleriServices,İş_EmirleriServices>();
+
+
 
 
             services.AddAuthentication(x =>
