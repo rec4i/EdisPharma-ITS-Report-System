@@ -1,0 +1,261 @@
+@{
+    Layout = "~/Views/Shared/Anasayfa_Layout.cshtml";
+}
+<script>
+    $(document).ready(function () {
+        $("#Şehir_Select").select2({
+            ajax: {
+                url: "api/Şehir_İlçe/Get_By_Word_City",
+                dataType: 'json',
+                type: 'POST',
+                delay: 250,
+                global: false,
+                contentType: "application/json; charset=utf-8",
+                data: function (params) {
+                    return '{"StringReq":"' + params.term + '"}'
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: $.map(data, function (item) {
+
+                            return {
+                                text: item.cityName,
+                                id: item.cityID
+                            }
+                        })
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 2
+        })
+        $("#İlçe_Select").select2({
+            ajax: {
+                url: "api/Şehir_İlçe/Get_By_Word_Town",
+                dataType: 'json',
+                type: 'POST',
+                delay: 250,
+                global: false,
+                contentType: "application/json; charset=utf-8",
+                data: function (params) {
+                    return '{"StringReq":"' + params.term + '"}'
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: $.map(data, function (item) {
+                            return {
+                                text: item.townName,
+                                id: item.townID
+                            }
+                        })
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 2
+        })
+ $.ajax({
+                url: 'api/UyeIslemleri/Get_Uyeler',
+                type: 'POST',
+                async: false,
+                dataType: "json",
+                data: '{' +
+                    '"Bas_Tar":"' + $('#TextBox1').val() + '",' +
+                    '"Bit_Tar":"' + $('#TextBox2').val() + '",' +
+                    '"Şehirler":' + JSON.stringify(Şehir_Liste) + ',' +
+                    '"İlçeler":' + JSON.stringify(İlçe_Liste) + ',' +
+                    '"Cinsiyet":' + JSON.stringify(Cinsiyet_Liste) + ',' +
+                    '"Parti_Görevi":' + JSON.stringify(Parti_Görevi_Liste) + ',' +
+                    '"Meslek":' + JSON.stringify(Meslek_Liste) + ',' +
+                    '"Doğum_Tar_Bas":"' + $('#Doğum_Tar_Bas').val() + '",' +
+                    '"Doğum_Tar_Son":"' + $('#Doğum_Tar_Son').val() + '"' +
+                    '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    Liste_ = data;
+                    console.log(data)
+
+                },
+                error: function (xhr, status, error, title) {
+                    if (xhr.status == 200) {
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Talep Esnasında Bir Hata Oluştur',
+                            text: 'Hata Kodu:' + xhr.status + '  Hata İçeriği: ' + title,
+                        })
+                    }
+
+                }
+            });
+
+        function Hasta_Listesi_Tablosu_Doldur() {
+            var Liste_ = [];
+
+
+
+          
+            $.ajax({
+                url: 'api/UyeIslemleri/Get_Uyeler',
+                type: 'POST',
+                async: false,
+                dataType: "json",
+                data: '{' +
+                    '"Bas_Tar":"' + $('#TextBox1').val() + '",' +
+                    '"Bit_Tar":"' + $('#TextBox2').val() + '",' +
+                    '"Şehirler":' + JSON.stringify(Şehir_Liste) + ',' +
+                    '"İlçeler":' + JSON.stringify(İlçe_Liste) + ',' +
+                    '"Cinsiyet":' + JSON.stringify(Cinsiyet_Liste) + ',' +
+                    '"Parti_Görevi":' + JSON.stringify(Parti_Görevi_Liste) + ',' +
+                    '"Meslek":' + JSON.stringify(Meslek_Liste) + ',' +
+                    '"Doğum_Tar_Bas":"' + $('#Doğum_Tar_Bas').val() + '",' +
+                    '"Doğum_Tar_Son":"' + $('#Doğum_Tar_Son').val() + '"' +
+                    '}',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    Liste_ = data;
+                    console.log(data)
+
+                },
+                error: function (xhr, status, error, title) {
+                    if (xhr.status == 200) {
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Talep Esnasında Bir Hata Oluştur',
+                            text: 'Hata Kodu:' + xhr.status + '  Hata İçeriği: ' + title,
+                        })
+                    }
+
+                }
+            });
+
+            $('#Hasta_Listesi').empty();
+
+            $('#Hasta_Listesi').append('<table id="Hasta_listei_Table" class="display" style="width: 100%">' +
+                '<thead>' +
+                '<tr>' +
+                '<th>AD SOYAD</th>' +
+                '<th>Baba Adı</th>' +
+                '<th>Anne Adı</th>' +
+                '<th>Tc Kimlik</th>' +
+                '<th>Kayıt Tarihi</th>' +
+                '<th>Cep Telefonu</th>' +
+                '<th>Cinsiyet</th>' +
+                '<th>Meslek</th>' +
+                '<th>Partideki Görevi</th>' +
+                '<th>Görev Yeri İl</th>' +
+                '<th>Görev Yeri İlçe</th>' +
+                '<th>Adres Ev</th>' +
+                '<th>Adres İş</th>' +
+                '<th style="text-align: center;">Düzenle</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody id="Hasta_Listesi_Tbody">' +
+                '</tbody>' +
+                '<tfoot>' +
+                ' <tr>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '<th></th>' +
+                '</tr>' +
+                '</tfoot>' +
+                '</table>'
+            );
+
+
+            if (Liste_.length > 0) {
+                var Tbody = $('tbody[id=Hasta_Listesi_Tbody]')
+
+
+                for (var i = 0; i < Liste_.length; i++) {
+                    let Uye_Tc = Liste_[i].tc
+                    Tbody.append(
+                        '<tr>' +
+                        '<td>' + Liste_[i].ad + " " + Liste_[i].soyad + '</td>' +
+                        '<td>' + Liste_[i].babaADI + '</td>' +
+                        '<td>' + Liste_[i].anaADI + '</td>' +
+                        '<td>' + Liste_[i].tc + '</td>' +
+                        '<td>' + Liste_[i].kayır_Tarihi + '</td>' +
+                        '<td>' + Liste_[i].telefonno + '</td>' +
+                        '<td>' + Liste_[i].cinsiyet + '</td>' +
+                        '<td>' + Liste_[i].meslek + '</td>' +
+                        '<td>' + Liste_[i].partiGOREVI + '</td>' +
+                        '<td>' + Liste_[i].gorevYeriIL + '</td>' +
+                        '<td>' + Liste_[i].gorevYeriILCE + '</td>' +
+                        '<td>' + Liste_[i].adresEV + '</td>' +
+                        '<td>' + Liste_[i].adresIS + '</td>' +
+                        '<td style="text-align: center;"><a style="font-size: 20px;    " id="Düzenle" value="' + Liste_[i].id + '"><i class="fa fa-edit"></i></a></td>' +
+                        '</tr>'
+                    )
+                }
+
+
+            }
+
+
+
+            $('#Hasta_listei_Table').dataTable({
+                "lengthMenu": [10, 25, 50, 75, 100, 200, 500, 750, 1000],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.22/i18n/Turkish.json"
+                },
+                "order": [],
+                scrollX: true
+
+            });
+
+        };
+
+
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-secondary">
+            <div class="card-header" style="text-align: center;">
+                <label>Eczane Ara</label>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Şehir :</label>
+                        <select class="player-select form-control form-control-sm" multiple style="width: 100%;"
+                            id="Şehir_Select"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label>İlçe :</label>
+                        <select class="player-select form-control form-control-sm" multiple style="width: 100%;"
+                            id="İlçe_Select"></select>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 25px;">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-block btn-primary btn-lg">Ara</button>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 15px">
+                    <div class="col-12">
+                        <div id="Hasta_Listesi"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
