@@ -3,7 +3,8 @@
 }
 <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.css">
 <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
-
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
+<script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
 <script>
     function getFormattedDate(date) {
         var today = new Date(date);
@@ -16,24 +17,29 @@
     }
     function ajaxRequest(params) {
 
+        setDate($('#Başlangıç_Tarihi'), 0)
+        setDate($('#Bitiş_Tarihi'), 1)
+
         //var url = 'https://examples.wenzhixin.net.cn/examples/bootstrap_table/data'
         //$.get(url + '?' + $.param(params.data)).then(function (res) {
         //    params.success(res)
         //})
-        console.log(params.data)    
+        console.log(params.data)
 
 
-        var Limit = (params.data.limit == undefined ? '9999999' : params.data.limit )
+        var Limit = (params.data.limit == undefined ? '9999999' : params.data.limit)
 
         $.ajax({
-            url: "/api/Bildirim_Api/get_All_Notificatons_With_Pagination",
+            url: "/api/Bildirim_Api/get_All_Notificatons_With_Pagination_New",
             type: 'POST',
             async: true,
-            global:false,
-            dataType: "json",
+            global: false,
+            dataType: "json",//Start_Date
             data: '{' +
                 '"offset":"' + params.data.offset + '",' +
-                '"limit":"' +Limit + '",' +
+                '"limit":"' + Limit + '",' +
+                '"Start_Date":"' + $('#Başlangıç_Tarihi').val() + '",' +
+                '"End_date":"' + $('#Bitiş_Tarihi').val() + '",' +
                 '"search":"' + params.data.search + '"' +
                 '}',
             contentType: "application/json; charset=utf-8",
@@ -43,12 +49,20 @@
                 var rows = []
                 for (i = 0; i < temp.rows.length; i++) {
                     var x = {
-                        'ID': temp.rows[i].id,
-                        //'İşin_Adı': temp.rows[i].İşin_Adı,
-                        //'oluşturlma_Tar': getFormattedDate(temp.rows[i].olusturlma_Tarihi),
-                        //'son_Düzenleme_Tar': temp.rows[i].son_Düzenleme_Tar,
-                        //'Düzenle': '<button class="btn btn-warning btn-sm" value="' + temp.rows[i].id + '" id="İşi_Düzenle" style="word-break: keep-all;"><i class="fa fa-file-text "></i> Düzenle</button>',
-                        //'Sil': '<button class="btn btn-danger btn-sm" value="' + temp.rows[i].id + '" id="İşi_Sil" style="word-break: keep-all;"><i class="fa fa-trash "></i></button>'
+                        'NOTIFICATION_ORDER_ID': temp.rows[i].notificatioN_ORDER_ID,
+                        'NOTIFICATION_TYPE_NAME': temp.rows[i].notificatioN_TYPE_NAME,
+                        'DOCUMENT_NO': temp.rows[i].documenT_NO,
+                        'QUANTITY': temp.rows[i].quantity,
+                        'CUSTOMER_NAME': temp.rows[i].customeR_NAME,
+                        'BASE_PRODUCT_NAME': temp.rows[i].basE_PRODUCT_NAME,
+                        'BN': temp.rows[i].bn,
+                        'NOTIFICATION_ORDER_DOCUMENT_DATE': getFormattedDate(temp.rows[i].notificatioN_ORDER_DOCUMENT_DATE),
+                        'MD': temp.rows[i].md,
+                        'XD': temp.rows[i].xd,
+                        'BOX_SSCC': temp.rows[i].boX_SSCC,
+                        'PALET_SSCC': temp.rows[i].paleT_SSCC,
+
+
 
                     }
                     rows.push(x)
@@ -64,15 +78,73 @@
             }
         });
 
+
+
+       
+
     }
 
 
     $(document).ready(function () {
 
+
+
         Bildirim_Tablosu_Build($('#Bildirim_Table'))
+        $('#Tablo_Set_Button').click(function () {
+
+            Bildirim_Tablosu_Build($('#Bildirim_Table'))
+
+
+        })
+        //get_Exel_New
+
+        $('#Tablo_Yazdır_Button').click(function () {
+
+            fetch("/api/Bildirim_Api/get_Exel_New", {
+                body: '{' +
+                    '"Start_Date":"' + $('#Başlangıç_Tarihi').val() + '",' +
+                    '"End_date":"' + $('#Bitiş_Tarihi').val() + '"' +
+                    '}',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                },
+            })
+                .then(response => response.blob())
+                .then(response => {
+                    const blob = new Blob([response], { type: 'application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    const downloadUrl = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = downloadUrl;
+                    a.download = "file.xlsx";
+                    document.body.appendChild(a);
+                    a.click();
+                })
+
+
+        })
 
     })
 
+
+    function setDate($input, plus_Month) {
+        var date = new Date();
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        var mont_ = parseInt(month) + parseInt(plus_Month)
+        if (mont_ < 10) mont_ = "0" + mont_
+
+
+        var today = year + "-" + mont_ + "-" + day + "";
+
+        $input.attr("value", today);
+    }
 
     function Bildirim_Tablosu_Build($el) {
 
@@ -81,9 +153,63 @@
         var data__ = [];
 
         columns.push({
-            field: 'ID',
-            title: 'ID',
+            field: 'NOTIFICATION_ORDER_ID',
+            title: 'NOTIFICATION_ORDER_ID',
         })
+        columns.push({
+            field: 'NOTIFICATION_TYPE_NAME',
+            title: 'NOTIFICATION_TYPE_NAME',
+        })
+
+        columns.push({
+            field: 'DOCUMENT_NO',
+            title: 'DOCUMENT_NO',
+        })
+
+        columns.push({
+            field: 'QUANTITY',
+            title: 'QUANTITY',
+        })
+
+        columns.push({
+            field: 'CUSTOMER_NAME',
+            title: 'CUSTOMER_NAME',
+        })
+
+        columns.push({
+            field: 'BASE_PRODUCT_NAME',
+            title: 'BASE_PRODUCT_NAME',
+        })
+
+        columns.push({
+            field: 'BN',
+            title: 'BN',
+        })
+
+        columns.push({
+            field: 'NOTIFICATION_ORDER_DOCUMENT_DATE',
+            title: 'NOTIFICATION_ORDER_DOCUMENT_DATE',
+        })
+
+        columns.push({
+            field: 'MD',
+            title: 'MD',
+        })
+
+        columns.push({
+            field: 'XD',
+            title: 'XD',
+        })
+
+        columns.push({
+            field: 'BOX_SSCC',
+            title: 'BOX_SSCC',
+        })
+        columns.push({
+            field: 'PALET_SSCC',
+            title: 'PALET_SSCC',
+        })
+
 
 
         $el.bootstrapTable('destroy')
@@ -92,6 +218,8 @@
             columns: columns,
             sidePagination: "server",
             pagination: true,
+            export: true,
+            exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
             ajax: "ajaxRequest",
             // clickToSelect: true,
             // detailView: true,
@@ -116,7 +244,27 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col">
-                        <table   data-page-list="[10, 25, 50, 100, 200, All]" id="Bildirim_Table"></table>
+                        <label for="">Baslangıç Tarihi:</label>
+                        <input type="date" id="Başlangıç_Tarihi" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label for="">Bitiş Tarihi:</label>
+                        <input type="date" id="Bitiş_Tarihi" class="form-control">
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 25px;">
+                    <div class="col">
+                        <button type="button" class="btn btn-block btn-primary" id="Tablo_Set_Button">Set</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-block btn-primary" id="Tablo_Yazdır_Button">Yazdır</button>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 25px;">
+                    <div class="col">
+                        <table data-page-list="[10, 25, 50, 100, 200, All]" data-show-export="true"
+                            data-toolbar="#toolbar" id="Bildirim_Table">
+                        </table>
                     </div>
                 </div>
             </div>

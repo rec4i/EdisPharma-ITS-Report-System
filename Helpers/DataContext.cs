@@ -11,12 +11,25 @@ namespace WebApi.Helpers
     {
         public DbSet<User> Report_Users__ { get; set; }
 
-
         public DbSet<NOTIFICATION> NOTIFICATION { get; set; }
 
         public DbSet<NOTIFICATION_ORDER> NOTIFICATION_ORDER { get; set; }
 
+        public DbSet<NOTIFICATION_TYPE> NOTIFICATION_TYPE { get; set; }
+        public DbSet<BASE_PRODUCT> BASE_PRODUCT { get; set; }
+        public DbSet<CUSTOMER> CUSTOMER { get; set; }
 
+        public DbSet<STOCK> STOCK { get; set; }
+
+        public DbSet<NOTIFICATION_ORDER_STOCK_HISTORY> NOTIFICATION_ORDER_STOCK_HISTORY { get; set; }
+
+       //public DbSet<USER_> USER { get; set; }
+
+
+
+//USER_
+
+//NOTIFICATION_ORDER_STOCK_HISTORY
 
         private readonly IConfiguration Configuration;
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApi.Entities;
+using WebApi.Helpers;
 
 namespace WebApi.Authorization
 {
@@ -16,7 +17,7 @@ namespace WebApi.Authorization
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
         private readonly IList<Role> _roles;
-
+   
         public AuthorizeAttribute(params Role[] roles)
         {
             _roles = roles ?? new Role[] { };
@@ -30,9 +31,9 @@ namespace WebApi.Authorization
             if (allowAnonymous)
                 return;
 
-            
-            // authorization
 
+            // authorization
+                
             // || (_roles.Any() && !_roles.Contains(user.Role))
             var user = (User)context.HttpContext.Items["User"];
             if (user == null || (_roles.Any() && !_roles.Contains(user.Role)))
@@ -50,7 +51,7 @@ namespace WebApi.Authorization
 
                 }
             }
-          
+
 
         }
     }
